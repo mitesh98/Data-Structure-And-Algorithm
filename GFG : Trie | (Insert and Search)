@@ -1,0 +1,117 @@
+Question from GeeksForGeeks:
+Link : https://practice.geeksforgeeks.org/problems/trie-insert-and-search/0
+Trie is an efficient information retrieval data structure. Use this data structure to store Strings and search strings. Your task is to use TRIE data structure and search the given string A. If found print 1 else 0.
+
+Input:
+The first line of input contains a single integer T denoting the number of test cases. Then T test cases follow. Each test case consists of three lines.
+First line of each test case consist of a integer N, denoting the number of element in a Trie to be stored.
+Second line of each test case consists of N space separated strings denoting the elements to be stored in the trie.
+Third line of each test case consists of a String A to be searched in the stored elements.
+
+Output:
+Print the respective output in the respective line.
+
+Constraints:
+1<=T<=20
+1<=N<=20
+
+Example:
+Input:
+1
+8
+the a there answer any by bye their
+the
+Output:
+1
+ 
+
+** For More Input/Output Examples Use 'Expected Output' option **
+Contributor: Saksham Raj Seth
+Author: saksham seth
+
+================================================Solution by Mitesh Kumar====================================
+
+#include<iostream>
+using namespace std;
+struct Node
+{
+    char c;
+    bool isEnd;
+    Node* child[26];
+    Node(char ch)
+    {
+        c=ch;
+        isEnd=false;
+        for(int i=0;i<26;i++)
+            child[i]=NULL;
+    }
+    
+};
+void insert(Node* root,string s)
+{
+    int n=s.length();
+    Node* parent=root;
+    for(int i=0;i<n;i++)
+    {
+        char c=s[i];
+        if(parent->child[c-'a']==NULL)
+        {
+            Node* branch=new Node(c);
+            parent->child[c-'a']=branch;
+            parent=branch;
+        }
+        else
+        {
+            parent=parent->child[c-'a'];
+        }
+    }
+    parent->isEnd=true;
+}
+bool find(Node* root,string s)
+{
+    int n=s.length();
+    Node* parent=root;
+    for(int i=0;i<n;i++)
+    {
+        char c=s[i];
+        if(parent->child[c-'a']==NULL)
+        {
+           return(false);
+        }
+        else
+        {
+            parent=parent->child[c-'a'];
+        }
+    }
+    if(parent->isEnd==true)
+        return(true);
+    else
+        return(false);
+    
+}
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        int n;
+        cin>>n;
+        Node* root=new Node('Z');
+        while(n--)
+        {
+            string str;
+            cin>>str;
+            insert(root,str);
+        }
+        string str;
+        cin>>str;
+        bool isFind=find(root,str);
+        if(isFind==true)
+            cout<<"1\n";
+        else
+            cout<<"0\n";    
+    }
+	
+	return 0;
+}
