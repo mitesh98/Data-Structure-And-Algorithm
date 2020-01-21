@@ -1,0 +1,84 @@
+Shortest Unique Prefix
+Find shortest unique prefix to represent each word in the list. Example:
+Input: [zebra, dog, duck, dove]
+Output: {z, dog, du, dov}
+where we can see that
+zebra = z
+dog = dog
+duck = du
+dove = dov
+ NOTE : Assume that no word is prefix of another. In other words, the representation is always possible.
+ 
+ 
+ =============================Solution By Mitesh==============================================
+ 
+ struct Node
+{
+    char c;
+    int freq;
+    Node* child[26];
+    Node(char ch)
+    {
+        c=ch;
+        freq=1;
+        for(int i=0;i<26;i++)
+        {
+            child[i]=NULL;
+        }
+    }
+};
+void insert(Node* parent,string str)
+{
+    int n=str.length();
+    for(int i=0;i<n;i++)
+    {
+        char ch=str[i];
+        if(parent->child[ch-'a']==NULL)
+        {
+            Node* branch=new Node(ch);
+            parent->child[ch-'a']=branch;
+            parent=parent->child[ch-'a'];
+        }
+        else
+        {
+            parent->child[ch-'a']->freq++;
+            parent=parent->child[ch-'a'];
+        }
+    }
+}
+void unique_prefix(Node* parent,string str,vector<string> &res)
+{
+    int n=str.length();
+    string s="";
+    for(int i=0;i<n;i++)
+    {
+        char ch=str[i];
+        s.push_back(ch);
+        if(parent->child[ch-'a']->freq==1)
+        {
+            res.push_back(s);
+            return;
+        }
+        else
+        {
+            parent=parent->child[ch-'a'];
+        }
+    }
+    s="";
+    res.push_back(str);
+    return;
+}
+vector<string> Solution::prefix(vector<string> &A) {
+    vector<string>res;
+    int len=A.size();
+    Node *root=new Node('Z');
+    for(int i=0;i<len;i++)
+    {
+        insert(root,A[i]);
+    }
+    for(int i=0;i<len;i++)
+    {
+        unique_prefix(root,A[i],res);
+    }
+    return(res);
+}
