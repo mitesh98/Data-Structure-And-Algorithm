@@ -17,7 +17,22 @@ Example Input 2:
 Example Output 2:
     3
     
+
 ===============================Solution By Mitesh Kumar===============================
+
+int Solution::findMinXor(vector<int> &A) {
+    sort(A.begin(),A.end());
+    int max=INT_MAX;
+    for(int i=1;i<A.size();i++)
+    {
+        int m=A[i]^A[i-1];
+        if(m<max)
+            max=m;
+    }
+    return(max);
+}
+
+===============================Solution By Mitesh Kumar Using Trie===============================
 
 #include<bits/stdc++.h>
 struct Node
