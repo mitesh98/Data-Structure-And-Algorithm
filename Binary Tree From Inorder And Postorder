@@ -1,0 +1,52 @@
+Given inorder and postorder traversal of a tree, construct the binary tree.
+ Note: You may assume that duplicates do not exist in the tree. 
+Example :
+Input : 
+        Inorder : [2, 1, 3]
+        Postorder : [2, 3, 1]
+
+Return : 
+            1
+           / \
+          2   3
+          
+================================Solution By Mitesh Kumar ==========================================================
+
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+unordered_map<int,int>getIndex;
+TreeNode* building(vector<int> &post, vector<int> &in,int low,int high,int &pIndex)
+{
+   // cout<<low<<" "<<high<<" "<<pIndex<<"     ";
+    if(low>high)
+        return(NULL);
+  
+    int data=post[pIndex];
+    TreeNode* Node=new TreeNode(data);
+    (pIndex)--;
+    if(low==high)
+        return(Node);
+    int index=getIndex[data];
+    //cout<<data<<" "<<index<<"    ";
+    Node->right=building(post,in,index+1,high,pIndex);
+    Node->left=building(post,in,low,index-1,pIndex);
+   
+    return(Node);
+}
+TreeNode* Solution::buildTree(vector<int> &in, vector<int> &post)
+{
+    getIndex.clear();
+    int len=in.size();
+    for(int i=0;i<len;i++)
+        getIndex[in[i]]=i;
+    int pIndex=len-1;
+    TreeNode* root=building(post,in,0,len-1,pIndex);
+    return(root);
+}
