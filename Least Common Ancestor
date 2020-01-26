@@ -1,0 +1,152 @@
+Find the lowest common ancestor in an unordered binary tree given two values in the tree.
+ Lowest common ancestor : the lowest common ancestor (LCA) of two nodes v and w in a tree or directed acyclic graph (DAG) is the lowest (i.e. deepest) node that has both v and w as descendants. 
+Example :
+        _______3______
+       /              \
+    ___5__          ___1__
+   /      \        /      \
+   6      _2_     0        8
+         /   \
+         7    4
+For the above tree, the LCA of nodes 5 and 1 is 3.
+ LCA = Lowest common ancestor 
+Please note that LCA for nodes 5 and 4 is 5.
+You are given 2 values. Find the lowest common ancestor of the two nodes represented by val1 and val2
+No guarantee that val1 and val2 exist in the tree. If one value doesn't exist in the tree then return -1.
+There are no duplicate values.
+You can use extra memory, helper functions, and can modify the node struct but, you can't add a parent pointer.
+=============================Solution By Mitesh Kumar=====================================================================
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class daipair
+{
+     public:
+    bool is_val1_Present;
+    bool is_val2_Present;
+    TreeNode* Node; 
+    daipair()
+    {
+        is_val1_Present=false;
+        is_val2_Present=false;
+        Node=NULL;
+    }
+};
+daipair findLCA(TreeNode* root,int val1,int val2)
+{
+    if(root==NULL)
+    {
+        daipair self;
+        return(self);
+    }
+    daipair dia_left=findLCA(root->left,val1,val2);
+    daipair dia_right=findLCA(root->right,val1,val2);
+    if(dia_left.is_val1_Present&&dia_left.is_val2_Present)
+    {
+       return(dia_left);
+    }
+    else if(dia_right.is_val1_Present&&dia_right.is_val2_Present)
+    {
+        return(dia_right);
+    }
+    else if((dia_right.is_val1_Present&&dia_left.is_val2_Present)||(dia_right.is_val2_Present&&dia_left.is_val1_Present))
+    {
+        daipair self;
+        self.is_val1_Present=true;
+        self.is_val2_Present=true;
+        self.Node=root;
+        return(self);
+    }
+    else if(dia_left.is_val1_Present||dia_left.is_val2_Present)
+    {
+        if(dia_left.is_val1_Present)
+        {
+            if(root->val==val2)
+            {
+                daipair self;
+                self.is_val1_Present=true;
+                self.is_val2_Present=true;
+                self.Node=root;
+                return(self);
+            }
+            return(dia_left);
+        }
+        else if(dia_left.is_val2_Present)
+        {
+            if(root->val==val1)
+            {
+                daipair self;
+                self.is_val1_Present=true;
+                self.is_val2_Present=true;
+                self.Node=root;
+                return(self);
+            }
+            return(dia_left);
+        }
+        
+        
+    }
+    else if(dia_right.is_val1_Present||dia_right.is_val2_Present)
+    {
+        if(dia_right.is_val1_Present)
+        {
+            if(root->val==val2)
+            {
+                daipair self;
+                self.is_val1_Present=true;
+                self.is_val2_Present=true;
+                self.Node=root;
+                return(self);
+            }
+            return(dia_right);
+        }
+        else if(dia_right.is_val2_Present)
+        {
+            if(root->val==val1)
+            {
+                daipair self;
+                self.is_val1_Present=true;
+                self.is_val2_Present=true;
+                self.Node=root;
+                return(self);
+            }
+            return(dia_right);
+        }
+        
+        
+    }
+    else
+    {
+        daipair self;
+        if(root->val==val1)
+        {
+            self.is_val1_Present=true;
+        }
+        if(root->val==val2)
+        {
+            self.is_val2_Present=true;
+        }
+        if(self.is_val1_Present&&self.is_val2_Present)
+        {
+            self.Node=root;
+        }
+        
+         return(self);
+           
+    }
+    
+   
+    
+}
+int Solution::lca(TreeNode* A, int B, int C) {
+    daipair res=findLCA(A,B,C);
+    if(res.Node!=NULL)
+        return(res.Node->val);
+    return(-1);
+}
