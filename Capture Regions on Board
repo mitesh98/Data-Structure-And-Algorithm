@@ -1,0 +1,125 @@
+Given a 2D board containing 'X' and 'O', capture all regions surrounded by 'X'. A region is captured by flipping all 'O's into 'X's in that surrounded region. Input Format:
+    First and only argument is a N x M character matrix A
+Output Format:
+    make changes to the the input only as matrix is passed by reference.
+Constraints:
+    1 <= N,M <= 1000
+For Example:
+Input 1:
+    A = [ [X, X, X, X],
+          [X, O, O, X],
+          [X, X, O, X],
+          [X, O, X, X] ]
+Output 1:
+    After running your function, the board should be:
+    A = [ [X, X, X, X],
+          [X, X, X, X],
+          [X, X, X, X],
+          [X, O, X, X] ]
+Explanation:
+    O in (4,2) is not surrounded by X from below.
+×
+=====================Solution By Mitesh Kumar=====================================================================
+int rows[4];
+int cols[4];
+int convert(int i,int j,int n)
+{
+    return((i*n)+j);
+}
+vector<pair<int,int>> find_adjacent(int pos_i,int pos_j,int n_rows,int n_cols)
+{
+   vector<pair<int,int>>v;
+   for(int i=0;i<4;i++)
+   {
+      int x=pos_i+rows[i];
+      int y=pos_j+cols[i];
+      if(x>=0&&x<n_rows&&y>=0&&y<n_cols)
+         v.push_back(make_pair(x,y));
+   }
+   return(v);
+}
+void Solution::solve(vector<vector<char> > &A) {
+   int n_cols=A[0].size();
+   int n_rows=A.size();
+   rows[0]=0;
+   rows[1]=0;
+   rows[2]=-1;
+   rows[3]=1;
+   cols[0]=-1;
+   cols[1]=1;
+   cols[2]=0;
+   cols[3]=0;
+   queue<int>q;
+   unordered_set<int>s;
+   for(int i=0;i<n_cols;i++)
+   {
+         if(A[0][i]=='O')
+         {
+            int x=convert(0,i,n_cols);
+            q.push(x);
+            s.insert(x);
+         }
+         if(A[n_rows-1][i]=='O'&&n_rows!=1)
+         {
+            int x=convert(n_rows-1,i,n_cols);
+            q.push(x);
+            s.insert(x);
+         }
+   }
+   for(int i=1;i<n_rows-1;i++)
+   {
+         if(A[i][0]=='O')
+         {
+            int x=convert(i,0,n_cols);
+            q.push(x);
+            s.insert(x);
+         }
+         if(A[i][n_cols-1]=='O')
+         {
+            int x=convert(i,n_cols-1,n_cols);
+            q.push(x);
+            s.insert(x);
+         }
+   }
+  // cout<<q.size()<<" ";
+   
+
+   while(q.empty()==false)
+   {
+         int c=q.front();
+         int pos_i=c/n_cols;
+         int pos_j=c%n_cols;
+         vector<pair<int,int>>v=find_adjacent(pos_i,pos_j,n_rows,n_cols) ;
+         for(int i=0;i<v.size();i++)
+         {
+            int x=v[i].first;
+            int y=v[i].second;
+            if(A[x][y]=='O')
+            {
+               int pos=convert(x,y,n_cols);
+               if(s.find(pos)==s.end())
+               {
+                  q.push(pos);
+                  s.insert(pos);
+               }
+               
+            }
+         }
+         q.pop();
+   }
+   for(int i=0;i<n_rows;i++)
+   {
+      for(int j=0;j<n_cols;j++)
+      {
+         if(A[i][j]=='O')
+         {
+            int pos=convert(i,j,n_cols);
+            if(s.find(pos)==s.end())
+               A[i][j]='X';
+         }
+      }
+   }
+   
+    
+    
+}
