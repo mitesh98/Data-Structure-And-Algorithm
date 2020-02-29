@@ -1,0 +1,128 @@
+Given a matrix of integers A of size N x M consisting of 0, 1 or 2. Each cell can have three values:
+The value 0 representing an empty cell.
+The value 1 representing a fresh orange.
+The value 2 representing a rotten orange.
+Every minute, any fresh orange that is adjacent (Left, Right, Top, or Bottom) to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no cell has a fresh orange.
+If this is impossible, return -1 instead. Note:
+Your solution will run on multiple test cases. If you are using global variables, make sure to clear them.
+
+Input Format
+The first argument given is the integer matrix A.
+Output Format
+Return the minimum number of minutes that must elapse until no cell has a fresh orange.  
+If this is impossible, return -1 instead.
+Constraints
+1 <= N, M <= 1000
+0 <= A[i] <= 2
+For Example
+Input 1:
+    A = [   [2, 1, 1]
+            [1, 1, 0]
+            [0, 1, 1]   ]
+Output 1:
+    4
+
+Input 2:
+    A = [   [2, 1, 1]
+            [0, 1, 1]
+            [1, 0, 1]   ]
+Output 2:
+    -1
+=====================================Solution By Mitesh Kumar================================================================
+
+int rows[4];
+int cols[4];
+void initialize_row_col()
+{
+   rows[0]=0;
+   rows[1]=0;
+   rows[2]=-1;
+   rows[3]=1;
+   cols[0]=-1;
+   cols[1]=1;
+   cols[2]=0;
+   cols[3]=0;
+}
+
+int convert(int i,int j,int n)
+{
+    return((i*n)+j);
+}
+vector<pair<int,int>> find_adjacent(int pos_i,int pos_j,int n_rows,int n_cols)
+{
+   vector<pair<int,int>>v;
+   for(int i=0;i<4;i++)
+   {
+      int x=pos_i+rows[i];
+      int y=pos_j+cols[i];
+      if(x>=0&&x<n_rows&&y>=0&&y<n_cols)
+         v.push_back(make_pair(x,y));
+   }
+   return(v);
+}
+int Solution::solve(vector<vector<int> > &A) {
+    initialize_row_col();
+   int n_cols=A[0].size();
+   int n_rows=A.size();
+   unordered_set<int>visited;
+   queue<int>q;
+   for(int i=0;i<n_rows;i++)
+   {
+      for(int j=0;j<n_cols;j++)
+      {
+         if(A[i][j]==2)
+         {
+            int pos=convert(i,j,n_cols);
+            visited.insert(pos);
+           // cout<<pos<<"    ";
+            q.push(pos);
+         }
+      }
+   }
+   int ans=0;
+   while(q.empty()==false)
+   {
+      int n_element=q.size();
+     // cout<<n_element<<"  ";
+    // bool isThisloop=false;
+      ans++;
+      for(int i=0;i<n_element;i++)
+      {
+        
+         int current_pos=q.front();
+         int x=current_pos/n_cols;
+         int y=current_pos%n_cols;
+        // cout<<current_pos<<"     ";
+         //cout<<x<<" "<<y<<"   ";
+         vector<pair<int,int>>v=find_adjacent(x,y,n_rows,n_cols);
+       //  cout<<v.size()<<"     ";
+         for(int i=0;i<v.size();i++)
+         {
+            int pos_i=v[i].first;
+            int pos_j=v[i].second;
+           // cout<<pos_i<<" "<<pos_j<<"   ";
+            int pos=convert(pos_i,pos_j,n_cols);
+            if(visited.find(pos)==visited.end()&&A[pos_i][pos_j]!=0)
+            {
+               visited.insert(pos);
+               q.push(pos);
+               A[pos_i][pos_j]=2;
+            }
+         }
+         q.pop();
+      }
+   }
+   for(int i=0;i<n_rows;i++)
+   {
+      for(int j=0;j<n_cols;j++)
+      {
+         if(A[i][j]==1)
+         {
+            // cout<<i<<" "<<j<<"   ";
+            return(-1);
+         }
+      }
+   }
+      
+   return(ans-1);
+}
