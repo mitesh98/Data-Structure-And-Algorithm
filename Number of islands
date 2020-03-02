@@ -1,0 +1,130 @@
+Given a matrix of integers A of size N x M consisting of 0 and 1. A group of connected 1's forms an island. From a cell (i, j) such that A[i][j] = 1 you can visit any cell that shares a corner with (i, j) and value in that cell is 1. More formally, from any cell (i, j) if A[i][j] = 1 you can visit:
+(i-1, j) if (i-1, j) is inside the matrix and A[i-1][j] = 1.
+(i, j-1) if (i, j-1) is inside the matrix and A[i][j-1] = 1.
+(i+1, j) if (i+1, j) is inside the matrix and A[i+1][j] = 1.
+(i, j+1) if (i, j+1) is inside the matrix and A[i][j+1] = 1.
+(i-1, j-1) if (i-1, j-1) is inside the matrix and A[i-1][j-1] = 1.
+(i+1, j+1) if (i+1, j+1) is inside the matrix and A[i+1][j+1] = 1.
+(i-1, j+1) if (i-1, j+1) is inside the matrix and A[i-1][j+1] = 1.
+(i+1, j-1) if (i+1, j-1) is inside the matrix and A[i+1][j-1] = 1.
+Return the number of islands. Note:
+Rows are numbered from top to bottom and columns are numbered from left to right.
+Your solution will run on multiple test cases. If you are using global variables, make sure to clear them.
+
+Input Format
+The only argument given is the integer matrix A.
+Output Format
+Return the number of islands.
+Constraints
+1 <= N, M <= 100
+0 <= A[i] <= 1
+For Example
+Input 1:
+    A = [   [0, 1, 0]
+            [0, 0, 1]
+            [1, 0, 0]   ]
+Output 1:
+    2
+
+Input 2:
+    A = [   [1, 1, 0, 0, 0]
+            [0, 1, 0, 0, 0]
+            [1, 0, 0, 1, 1]
+            [0, 0, 0, 0, 0]
+            [1, 0, 1, 0, 1]    ]
+Output 2:
+    5
+==============================Solution By Mitesh Kumar=======================================================
+Objective: BFS of Top,btm,left,right,diag
+--------------------------------------------------------------------------------------------------------------
+int rows[8];
+int cols[8];
+void initialize_row_col()
+{
+   rows[0]=-1; rows[3]=-1;   rows[5]=-1;
+   rows[1]=0;  rows[4]=+1;   rows[6]=0;
+   rows[2]=1;                rows[7]=1;
+   
+   cols[0]=-1; cols[3]=0;   cols[5]=1;
+   cols[1]=-1; cols[4]=0;   cols[6]=1; 
+   cols[2]=-1;              cols[7]=1;
+  
+}
+int convert_i_j_into_pos(int i,int j,int n_cols)
+{
+    return((i*n_cols)+j);
+}
+vector<pair<int,int>> find_top_btm_left_right_diag(int pos_i,int pos_j,int n_rows,int n_cols)
+{
+   vector<pair<int,int>>v;
+   //cout<<pos_i<<" "<<pos_j<<":";
+   for(int i=0;i<8;i++)
+   {
+      // cout<<rows[i]<<" "<<cols[i]<<",";
+      int x=pos_i+rows[i];
+      int y=pos_j+cols[i];
+      //cout<<x<<" "<<y<<"   ";
+      if(x>=0&&x<n_rows&&y>=0&&y<n_cols)
+         v.push_back(make_pair(x,y));
+   }
+   return(v);
+}
+
+void BFS(vector<vector<int> > &A,int which_row,int which_col, vector<bool>&visited) 
+{
+    
+   int n_cols=A[0].size();
+   int n_rows=A.size();
+   queue<int>q;
+   int pos=convert_i_j_into_pos(which_row,which_col,n_cols);
+   q.push(pos);
+   visited[pos]=true;
+   while(q.empty()==false)
+   {
+      int n_element=q.size();
+      int current_pos=q.front();
+      int x=current_pos/n_cols;
+      int y=current_pos%n_cols;
+     // cout<<x<<" "<<y<<"  Adj: ";
+      vector<pair<int,int>>v=find_top_btm_left_right_diag(x,y,n_rows,n_cols);
+         for(int j=0;j<v.size();j++)
+         {
+            int pos_i=v[j].first;
+            int pos_j=v[j].second;
+           // cout<<pos_i<<" "<<pos_j<<"  ";
+            pos=convert_i_j_into_pos(pos_i,pos_j,n_cols);
+            if(visited[pos]==false&&A[pos_i][pos_j]==1)
+            {
+               visited[pos]=true;
+               q.push(pos);
+            }
+         }
+        
+         q.pop();
+      
+   }
+}
+int Solution::solve(vector<vector<int> > &A)
+{
+    initialize_row_col();
+   int n_cols=A[0].size();
+   int n_rows=A.size();
+   vector<bool>visited(n_rows*n_cols,false);
+   //bool visited[n_rows*n_cols];
+   //memset(visited,false,sizeof(visited));
+   int ans=0;
+   for(int i=0;i<n_rows;i++)
+   {
+      for(int j=0;j<n_cols;j++)
+      {
+         int pos=convert_i_j_into_pos(i,j,n_cols);
+         if(A[i][j]==1&&visited[pos]==false)
+         {
+            ans++;
+           // cout<<i<<" "<<j<<"   ";
+            BFS(A,i,j,visited);
+         }
+      }
+   }
+   return(ans);
+}
