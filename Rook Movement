@@ -1,4 +1,4 @@
-
+------------------------------------ Problem Statement -----------------------------------------------------------------
 A rook is a piece in the strategy board game of chess which can move horizontally or vertically through any number of unoccupied squares. More formally in one step, the rook can move in any one of the following directions { UP , DOWN , LEFT , RIGHT } , any number of squares till the squares are unoccupied. Given the initial location ( A , B ) of the rook, the final destination ( C , D ) and the orientation of the chess board, find the minimum number of steps required by the player to move the rook to the desired destination or tell that it is impossible provided all the other pieces on the chess board are stationary. Unlike the normal chess board, for this problem the chess board is of the dimensions N x M. The orientation of the board is represented as 0 / 1 2D string array where 0 denotes empty square and 1 denotes occupied square. Note: It is guaranteed the initial location and the final destination are empty squares. Rows are numbered from top to bottom and columns are numbered from left to right. 
 Input Format
 The first four arguments given are the Integers A, B, C and D respectively.
@@ -38,7 +38,7 @@ Input 2:
 Output 2:
     -1
 ----------------------------------------------------------------------------
-Learning Object : Can trverse whole row or colmn in one go till disturbance
+Learning Object : BFS of graph with adjacent can be whole  row or colmn  till disturbance
 ==================Solution By Mitesh Kumar=============================================
 int ans;
 int i_j_into_pos(int i,int j,int n_cols)
