@@ -1,0 +1,150 @@
+
+A rook is a piece in the strategy board game of chess which can move horizontally or vertically through any number of unoccupied squares. More formally in one step, the rook can move in any one of the following directions { UP , DOWN , LEFT , RIGHT } , any number of squares till the squares are unoccupied. Given the initial location ( A , B ) of the rook, the final destination ( C , D ) and the orientation of the chess board, find the minimum number of steps required by the player to move the rook to the desired destination or tell that it is impossible provided all the other pieces on the chess board are stationary. Unlike the normal chess board, for this problem the chess board is of the dimensions N x M. The orientation of the board is represented as 0 / 1 2D string array where 0 denotes empty square and 1 denotes occupied square. Note: It is guaranteed the initial location and the final destination are empty squares. Rows are numbered from top to bottom and columns are numbered from left to right. 
+Input Format
+The first four arguments given are the Integers A, B, C and D respectively.
+The next argument given is the String array representing the orientation of the chess board of size N x M.
+Output Format
+Return a single integer denoting the minimum number of steps required to move to the destination and if it is impossible return -1.
+Constraints
+1 <= N, M <= 1000
+1 <= A, C <= N
+1 <= B, D <= M
+For Example
+Input 1:
+    A = 1
+    B = 1
+    C = 4
+    D = 5
+    E = 00010 
+        00011 
+        11000 
+        01000 
+   First Step: (1, 1) -> (1, 3)
+   Second Step: (1, 3) -> (4, 3)
+   Third Step: (4, 3) -> (4, 5)
+
+Output 1:
+    3
+
+Input 2:
+    A = 1
+    B = 1
+    C = 4
+    D = 1
+    E = 00010 
+        00011 
+        11000 
+        01000 
+Output 2:
+    -1
+----------------------------------------------------------------------------
+Learning Object : Can trverse whole row or colmn in one go till disturbance
+==================Solution By Mitesh Kumar=============================================
+int ans;
+int i_j_into_pos(int i,int j,int n_cols)
+{
+    return((i*n_cols)+j);
+}
+vector<pair<int,int>> find_top_btm_left_right(vector<string> &E,int pos_i,int pos_j,int n_rows,int n_cols)
+{
+   vector<pair<int,int>>v;
+   int x=pos_i-1;
+   while(x>=0)
+   {
+       if(E[x][pos_j]=='1')
+            break;
+        else
+        {
+            v.push_back(make_pair(x,pos_j)); 
+        }
+      x--;
+   }
+   x=pos_i+1;
+   while(x<n_rows)
+   {
+       if(E[x][pos_j]=='1')
+            break;
+        else
+        {
+            v.push_back(make_pair(x,pos_j)); 
+        }
+      x++;
+   }
+   int y=pos_j-1;
+   while(y>=0)
+   {
+       if(E[pos_i][y]=='1')
+            break;
+        else
+        {
+            v.push_back(make_pair(pos_i,y)); 
+        }
+      y--;
+   }
+    y=pos_j+1;
+   while(y<n_cols)
+   {
+       if(E[pos_i][y]=='1')
+            break;
+        else
+        {
+            v.push_back(make_pair(pos_i,y)); 
+        }
+      y++;
+   }
+   
+   return(v);
+}
+void BFS(vector<string> &E,int which_row,int which_col, vector<bool>&visited,int final_row,int final_col) 
+{
+    
+   int n_cols=E[0].size();
+   int n_rows=E.size();
+   queue<int>q;
+   int pos=i_j_into_pos(which_row,which_col,n_cols);
+   q.push(pos);
+   visited[pos]=true;
+   while(q.empty()==false)
+   {
+      ans++;
+      int n_element=q.size();
+      for(int i=0;i<n_element;i++)
+      {
+         int current_pos=q.front();
+         int x=current_pos/n_cols;
+         int y=current_pos%n_cols;
+        // cout<<x<<" "<<y<<" : ";
+         vector<pair<int,int>>v=find_top_btm_left_right(E,x,y,n_rows,n_cols);
+         for(int j=0;j<v.size();j++)
+         {
+            int pos_i=v[j].first;
+            int pos_j=v[j].second;
+            
+           //cout<<pos_i<<" "<<pos_j<<"  ";
+            pos=i_j_into_pos(pos_i,pos_j,n_cols);
+            if(visited[pos]==false&&E[pos_i][pos_j]=='0')
+            {
+               visited[pos]=true;
+               q.push(pos);
+            }
+            if(pos_i==final_row&&pos_j==final_col)
+                return;
+         }
+        
+         q.pop();
+      }
+      
+   }
+}
+
+int Solution::solve(int A, int B, int C, int D, vector<string> &E) {
+   ans=0;
+   int n_cols=E[0].size();
+   int n_rows=E.size();
+   vector<bool>visited(n_cols*n_rows,false);
+    BFS(E,A-1,B-1,visited,C-1,D-1);
+   int pos=i_j_into_pos(C-1,D-1,n_cols);
+   if(visited[pos]==false)
+      return(-1);
+   return(ans);
+}
