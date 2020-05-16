@@ -1,0 +1,76 @@
+
+Given a string A consisting of lowercase English alphabets. Find and return lexicographically smallest string B after removing duplicate letters from A so that every letter appears once and only once. 
+Input Format
+The only argument given is string A.
+Output Format
+Return lexicographically smallest string B after removing duplicate letters from A.
+Constraints
+1 <= length of the string <= 200000
+A consists of lowercase English alphabets only. 
+For Example
+Input 1:
+    A = "cbacdcbc"
+Output 1:
+    B = "acdb"
+
+Input 2:
+    A = "bcabc"
+Output 2:
+    B = "abc"
+
+ Complete Solution by Mitesh kumar
+
+
+
+string Solution::solve(string A) {
+    int arr[26];
+    bool present[26];
+    memset(arr,0,sizeof(arr));
+    memset(present,false,sizeof(present));
+    for(int i=0;i<A.size();i++)
+    {
+        arr[A[i]-'a']++;
+    }
+    string st;
+    stack<char>s;
+   for(int i=0;i<A.length();i++)
+    {
+    if(present[A[i]-'a']==true)
+    {
+        arr[A[i]-'a']--;
+            continue;
+    }
+       if(s.empty()==true)
+       {
+            s.push(A[i]);
+            st.push_back(A[i]);
+            present[A[i]-'a']=true;
+       }
+        else
+        {
+           while(s.empty()==false)
+            {
+                char c=s.top();
+                if(c>A[i]&&arr[c-'a']>1)
+                {
+                    arr[c-'a']--;
+                    present[c-'a']=false;
+                    s.pop();
+                    st.pop_back();
+                }
+                else
+                    break;
+               
+                
+            }
+            s.push(A[i]);
+            st.push_back(A[i]);
+            present[A[i]-'a']=true;
+               
+        }
+    }
+    
+  
+    return(st);
+        
+}
